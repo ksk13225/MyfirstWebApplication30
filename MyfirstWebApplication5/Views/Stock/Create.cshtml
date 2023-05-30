@@ -1,0 +1,57 @@
+﻿@*@model IEnumerable<MyfirstWebApplication5.Models.Stock>*@
+@model MyfirstWebApplication5.Models.Stock
+
+@{              
+  ViewBag.Title = "新規登録";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm("Create", "Stock"))
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Stock_Id, htmlAttributes: new { @class = "control-label col-md-2",  })
+        
+        <div class="col-md-10">
+            @*活性・非活性*@
+            @if (ViewBag.hyouji == 1)
+            {
+                @Html.EditorFor(model => model.Stock_Id, new { htmlAttributes = new { @class = "form-control" } })
+
+            }
+            else
+            {
+                @*@Html.EditorFor(model => model.Stock_Id, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })*@
+                @Html.EditorFor(model => model.Stock_Id, new { htmlAttributes = new { @class = "form-control" } })
+
+
+            }
+
+            @Html.ValidationMessageFor(model => model.Stock_Id, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Stock_Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Stock_Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Stock_Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+</div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="SaveProduct" class="btn btn-primary" />
+        </div>
+    </div>
+}
+
+

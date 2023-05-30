@@ -1,0 +1,234 @@
+﻿@model IEnumerable<MyfirstWebApplication5.Models.Stock>
+@*@model MyfirstWebApplication5.Models.Stock*@
+@{
+    /**/
+
+    ViewBag.Title = "stock";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+<h2>信用銘柄検索</h2>
+
+<br />
+@using (Html.BeginForm("Search", "Stock", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="form-group">
+
+                <label>検索条件</label>
+
+                <select name="select_stock" id="select_stockid">
+
+
+                    @if (ViewBag.select_stock == null)
+                    {
+                        <option value=1>証券コード</option>
+                        <option value=2>証券銘柄</option>
+                    }
+
+
+                    @if (ViewBag.select_stock == "1")
+                    {
+
+                        <option value=1 selected>証券コード</option>
+                        <option value=2>証券銘柄</option>
+                    }
+                    @if (ViewBag.select_stock == "2")
+                    {
+                        <option value=1>証券コード</option>
+                        <option value=2 selected>証券銘柄</option>
+                    }
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <label>Search</label>
+
+                        <input type="text" class="form-control" id="search" name="search" value="@(ViewBag.search ?? String.Empty)" />
+                        <br />
+                        <br />
+                        @*検索ボタン(submit複数)*@
+                        <input type="submit" value="Search" onclick="BtnKensakuClick()" class="btn btn-success mr-2" />
+
+                        @*新規作成ボタン*@
+                        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+    @if (ViewBag.kassei == 1)
+
+    {
+        <input type="submit" value="FileOutput" class="btn btn-success mr-2" id="fileoutputclick"/>
+    }
+    else
+    {
+        <input type="submit" value="FileOutput" class="btn btn-success mr-2" id="fileoutputclick"  disabled />
+    }
+
+    <br />
+
+
+
+
+
+
+
+    @if (Model != null)
+    {
+
+        <table class="table table-bordered table-hover" id="tblstock" name="ntblstock">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Stock_Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Stock_Name)
+                </th>
+                <th>action</th>
+            </tr>
+
+
+
+            @foreach (var item in Model)
+            {
+                <tr id="test">
+                    <td>
+                        @item.Stock_Id
+                    </td>
+                    <td>
+                        @item.Stock_Name
+                    </td>
+
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Stock_Id }) 
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Stock_Id })
+                    </td>
+                </tr>
+            }
+
+        </table>
+
+
+       
+        <ui class="pagination">
+            @{
+                int numberPage = ViewBag.numberPage;
+                int pageCurrent = ViewBag.pageCurrent;
+
+                if (pageCurrent > 1)
+                {
+                    int prepage = pageCurrent - 1;
+                    <li class="active"><a href="?page=@prepage">Prepage</a></li>
+                }
+
+                int i;
+
+                for (i = 1; i <= numberPage; i++)
+                {
+                    if (i == pageCurrent)
+                    {
+                        <li class="active"><a href="?page=@i">@i</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="?page=@i">@i</a></li>
+                    }
+                }
+
+                if (pageCurrent >= 1 && pageCurrent < numberPage)
+                {
+                    int nextpage = pageCurrent + 1;
+                    <li class="active"><a href="?page=@nextpage">NextPage</a></li>
+                }
+
+            }
+        </ui>
+    }
+
+
+
+
+
+
+        <script type="text/javascript">
+
+
+            $('#fileoutputclick').click(function () {
+
+                //var td = $('td').text();
+
+                var td = $('td').closest('tr');
+
+                td = $(td).text();
+
+                alert(td);
+
+         
+              
+                var obj = {
+                    Td: td,
+                }
+
+                SubmitForm(obj);
+                   //SubmitForm();
+
+        });
+
+            function SubmitForm(obj) {
+                $.ajax({
+                    url: "/Stock/FileOutput",
+                    method: "POST",
+                    data: obj,
+
+                    success: function (data) {
+                        console.log(data);
+                        //data = JSON.parse(data);
+                        //console.log(data);
+                        //alert(data);
+                        alert("出力完了しました");
+
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        console.log("error");
+                    },
+                })
+            }
+
+
+
+            @*function SubmitForm() {
+                $.ajax({
+                    url: "/Stock/FileOutput",
+                    method: "POST",
+                    dataType: 'JSON',
+                    data: function (param) {
+                        param = "@ViewBag.stocks";
+                    }
+
+                    
+                })
+            }*@
+
+
+
+
+
+        </script>
